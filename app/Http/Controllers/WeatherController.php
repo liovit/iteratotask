@@ -22,21 +22,15 @@ class WeatherController extends Controller
 
     }
 
-    public function test() {
-
-
-       
-    }
-
     // method to call api
     public function callApiGetRequest($link, $city, $apiKey) {
 
-        // format the response, include link, city, api key, convert it to json data format
+        // make the call to given link, store data in response variable and format data to json
         $response = Http::get($link, [
             'q' => $city,
             'appid' => $apiKey,
         ])->json();
-        
+
         // return json data
         return $response;
 

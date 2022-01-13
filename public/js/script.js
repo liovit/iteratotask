@@ -5,6 +5,9 @@ $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 
+    var cityCount = 0;
+    var cityExists = false;
+
     // ajax form submit
     $("form").submit(function (event) {
 
@@ -23,7 +26,7 @@ $(document).ready(function () {
 
         // ajax call
         $.ajax({
-            url: "/request-weather-data",
+            url: "/request/weather",
             type:"POST",
             data: {
                 "_token": token,
@@ -54,39 +57,55 @@ $(document).ready(function () {
                 // clear city input
                 $('#city').val('');
 
-                // check if the city is already present in tabs
-                if($('#'+response.name).length == 0) {
+                // check if city is present in any of tabs
+                $('.nav-link').each(function() {
+                    var city = $(this).attr('data-city');
+                    // console.log(city);
+                    if (city === response.name) {
+                        cityExists = true;
+                        return false;
+                    }
+                });
 
-                    // remove the active class for each of tab links
-                    $('.nav-link').each(function() {
-                        $(this).removeClass('active');
-                    });
-
-                    // hide all city information cards
-                    $('.card').each(function() {
-                        $(this).addClass('d-none');
-                    });
-
-                    // add new tab, with active class
-                    $('.nav-tabs').append('<li class="nav-item">\
-                        <a class="nav-link active" id="'+response.name+'" aria-current="page" href="#">'+response.name+'</a>\
-                    </li>');
-
-                    var temperature = calcTemp(response.main.temp);
-                    var feelsLike = calcTemp(response.main.feels_like);
-
-                    // add new city card, information about city, country, wind, temperature
-                    $('.cards-box').append('<div class="card mx-auto mt-4 '+response.name+'" style="width: 18rem;">\
-                        <div class="card-body">\
-                            <h5 class="card-title">'+response.name+'</h5>\
-                            <h6 class="card-subtitle mb-2 text-muted">'+response.sys.country+'</h6>\
-                            <p class="card-text">Wind: '+response.wind.speed+' m/s</p>\
-                            <p class="card-text">Current temperature: '+temperature+' celsius</p>\
-                            <p class="card-text">Feels like: '+feelsLike+' celsius</p>\
-                        </div>\
-                    </div>');
-
+                // if city is present
+                if(cityExists == true) {
+                    // reset the boolean for future checking if cities already exist in the tab list
+                    cityExists = false;
+                    // stop execution
+                    return false;
                 }
+
+                // remove the active class for each of tab links
+                $('.nav-link').each(function() {
+                    $(this).removeClass('active');
+                });
+
+                // hide all city information cards
+                $('.card').each(function() {
+                    $(this).addClass('d-none');
+                });
+
+                // add new tab, with active class
+                $('.nav-tabs').append('<li class="nav-item">\
+                    <a class="nav-link active" id="city'+cityCount+'" aria-current="page" data-city="'+response.name+'" href="#">'+response.name+'</a>\
+                </li>');
+
+                var temperature = calcTemp(response.main.temp);
+                var feelsLike = calcTemp(response.main.feels_like);
+
+                // add new city card, information about city, country, wind, temperature
+                $('.cards-box').append('<div class="card mx-auto mt-4 city'+cityCount+'" style="width: 18rem;">\
+                    <div class="card-body">\
+                        <h5 class="card-title">'+response.name+'</h5>\
+                        <h6 class="card-subtitle mb-2 text-muted">'+response.sys.country+'</h6>\
+                        <p class="card-text">Wind: '+response.wind.speed+' m/s</p>\
+                        <p class="card-text">Current temperature: '+temperature+' celsius</p>\
+                        <p class="card-text">Feels like: '+feelsLike+' celsius</p>\
+                    </div>\
+                </div>');
+
+                // add city count
+                cityCount++;
 
             },
             error: function(response) {
@@ -99,7 +118,7 @@ $(document).ready(function () {
     $('.nav-tabs').on('click', '.nav-link', function() {
 
         // get the clicked city
-        var clickedLinkId = $(this).attr('id');
+        var clickedLink = $(this).attr('id');
 
         // remove active class from all tab links
         $('.nav-link').each(function() {
@@ -112,9 +131,9 @@ $(document).ready(function () {
         });
 
         // show the information card of clicked city
-        $('.'+clickedLinkId).removeClass('d-none');
+        $('.'+clickedLink).removeClass('d-none');
         // add active class to clicked city
-        $('#'+clickedLinkId).addClass('active');
+        $('#'+clickedLink).addClass('active');
 
     });
 
