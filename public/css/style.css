@@ -1,0 +1,18 @@
+.margin-top {
+    margin-top: 100px;
+}
+
+.margin-top-sm {
+    margin-top: 50px;
+}
+
+.prepend {
+    position: relative;
+}
+
+.prepend .input-group-btn {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 9;
+}

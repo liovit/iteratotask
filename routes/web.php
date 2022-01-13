@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// welcoming page
 Route::get('/', function () {
     return view('welcome');
 });
+
+// request for weather data
+Route::post('/request-weather-data', [App\Http\Controllers\WeatherController::class, 'requestWeatherData']);
+
+// testing route
+Route::get('/test', [App\Http\Controllers\WeatherController::class, 'test']);
