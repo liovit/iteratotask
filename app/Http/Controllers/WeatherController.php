@@ -51,50 +51,63 @@ class WeatherController extends Controller
 
     // method to set results for front end
     public function setResult($query) {
-        // check which id is set currently
-        switch($this->link['id']) {
 
-            case 0: 
-                // check if error message exists, if it does, set the return result as error message
-                if(array_key_exists('message', $query)) {
-                    $result = [
-                        'message' => $query['message']
-                    ];
-                } else {
-                // if error message doesn't exist, set the result for front end
-                    $result = [
-                        'name' => $query['name'],
-                        'country' => $query['sys']['country'],
-                        'temperature' => $this->calcTemperature($query['main']['temp']),
-                        'feelsLike' => $this->calcTemperature($query['main']['feels_like']),
-                        'wind' => $query['wind']['speed']
-                    ];
-                }
+        if(array_key_exists('id', $this->link)) {
 
-                return $result;
+            // check which id is set currently
+            switch($this->link['id']) {
 
-                break;
+                case 0: 
+                    // check if error message exists, if it does, set the return result as error message
+                    if(array_key_exists('message', $query)) {
+                        $result = [
+                            'message' => $query['message']
+                        ];
+                    } else {
+                    // if error message doesn't exist, set the result for front end
+                        $result = [
+                            'name' => $query['name'],
+                            'country' => $query['sys']['country'],
+                            'temperature' => $this->calcTemperature($query['main']['temp']),
+                            'feelsLike' => $this->calcTemperature($query['main']['feels_like']),
+                            'wind' => $query['wind']['speed']
+                        ];
+                    }
 
-            case 1: 
-                // check if error message exists, if it does, set the return result as error message
-                if(array_key_exists('message', $query)) {
-                    $result = [
-                        'message' => $query['error']['message']
-                    ];
-                } else {
-                // if error message doesn't exist, set the result for front end
-                    $result = [
-                        'name' => $query['location']['name'],
-                        'country' => $query['location']['country'],
-                        'temperature' => $query['current']['temp_c'],
-                        'feelsLike' => $query['current']['feelslike_c'],
-                        'wind' => $this->calcWind($query['current']['wind_kph'])
-                    ];
-                }
+                    return $result;
 
-                return $result;
+                    break;
 
-                break;
+                case 1: 
+                    // check if error message exists, if it does, set the return result as error message
+                    if(array_key_exists('message', $query)) {
+                        $result = [
+                            'message' => $query['error']['message']
+                        ];
+                    } else {
+                    // if error message doesn't exist, set the result for front end
+                        $result = [
+                            'name' => $query['location']['name'],
+                            'country' => $query['location']['country'],
+                            'temperature' => $query['current']['temp_c'],
+                            'feelsLike' => $query['current']['feelslike_c'],
+                            'wind' => $this->calcWind($query['current']['wind_kph'])
+                        ];
+                    }
+
+                    return $result;
+
+                    break;
+
+            }
+
+        } else {
+
+            $result = [
+                'message' => 'All provided API are disrupted. Please contact owners.'
+            ];
+
+            return $result;
 
         }
 
@@ -164,11 +177,15 @@ class WeatherController extends Controller
     // method to call api
     public function callApiGetRequest($link, $city, $apiKey) {
 
-        // make the call to given link, store data in response variable and format data to json
-        $response = Http::get($link['requestUrl'], [
-            'q' => $city,
-            $link['keyName'] => $apiKey,
-        ])->json();
+        $response = '';
+
+        if(array_key_exists('requestUrl', $link)) {
+            // make the call to given link, store data in response variable and format data to json
+            $response = Http::get($link['requestUrl'], [
+                'q' => $city,
+                $link['keyName'] => $apiKey,
+            ])->json();
+        }
 
         // return json data
         return $response;
