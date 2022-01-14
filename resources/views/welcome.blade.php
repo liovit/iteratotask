@@ -33,7 +33,9 @@
         <div class="container-sm margin-top">
 
             <p>Very basic weathers page. You can check the current weather here by simply entering your API key from <a href="https://openweathermap.org/">https://openweathermap.org/</a> website and city name. Tabs will appear after submitting, they will only be saved until you quit or reload the website.</p>
-            <p>Here's a quick API key for testing: <b>de7b23c3ab49d5c9a26a30c9c762e055</b></p>
+            <p>In case <a href="https://openweathermap.org/">https://openweathermap.org/</a> would be down or the link would be disrupted, <br> other API website would be used in it's place: <a href="https://www.weatherapi.com/">https://www.weatherapi.com/</a></p>
+            <p>Here's a quick API key for testing (openweathermap.org): <b>de7b23c3ab49d5c9a26a30c9c762e055</b></p>
+            <p>Here's other API key for testing (weatherapi.com): <b>989bc263ac0743b880680006221401</b></p>
 
             <form id="weatherForm">
 
@@ -77,6 +79,12 @@
 
             </div>
 
+        </div>
+
+        <div id="loading-box">
+            <div id="loading">
+
+            </div>
         </div>
 
         {{-- Scripts --}}

@@ -27,6 +27,14 @@ $(document).ready(function () {
         // ajax call
         $.ajax({
             url: "/request/weather",
+            beforeSend: function() { 
+                $('#loading').show(); 
+                $('#loading-box').show();
+            },
+            complete: function() { 
+                $('#loading').hide(); 
+                $('#loading-box').hide();
+            },
             type:"POST",
             data: {
                 "_token": token,
@@ -38,16 +46,9 @@ $(document).ready(function () {
                 // console.log(response);
 
                 // check if the city was found
-                if(response.cod == '404') {
+                if(response.message) {
                     // if not, return response and stop next methods
-                    alert('City has not been found.');
-                    return false;
-                }
-
-                // check if the api key is found
-                if(response.cod == '401') {
-                    // if not, return response and stop next methods
-                    alert('Provided API key is invalid.');
+                    alert(response.message);
                     return false;
                 }
 
@@ -90,17 +91,17 @@ $(document).ready(function () {
                     <a class="nav-link active" id="city'+cityCount+'" aria-current="page" data-city="'+response.name+'" href="#">'+response.name+'</a>\
                 </li>');
 
-                var temperature = calcTemp(response.main.temp);
-                var feelsLike = calcTemp(response.main.feels_like);
+                // var temperature = calcTemp(response.main.temp);
+                // var feelsLike = calcTemp(response.main.feels_like);
 
                 // add new city card, information about city, country, wind, temperature
                 $('.cards-box').append('<div class="card mx-auto mt-4 city'+cityCount+'" style="width: 18rem;">\
                     <div class="card-body">\
                         <h5 class="card-title">'+response.name+'</h5>\
-                        <h6 class="card-subtitle mb-2 text-muted">'+response.sys.country+'</h6>\
-                        <p class="card-text">Wind: '+response.wind.speed+' m/s</p>\
-                        <p class="card-text">Current temperature: '+temperature+' celsius</p>\
-                        <p class="card-text">Feels like: '+feelsLike+' celsius</p>\
+                        <h6 class="card-subtitle mb-2 text-muted">'+response.country+'</h6>\
+                        <p class="card-text">Wind: '+response.wind+' m/s</p>\
+                        <p class="card-text">Current temperature: '+response.temperature+' celsius</p>\
+                        <p class="card-text">Feels like: '+response.feelsLike+' celsius</p>\
                     </div>\
                 </div>');
 
@@ -137,15 +138,15 @@ $(document).ready(function () {
 
     });
 
-    function calcTemp(temp) {
+    // function calcTemp(temp) {
 
-        // calculate Kelvin to Celsius
-        var calculation = temp - 273.15;
-        // round up the result
-        var result = Math.ceil(calculation);
-        // return result
-        return result;
+    //     // calculate Kelvin to Celsius
+    //     var calculation = temp - 273.15;
+    //     // round up the result
+    //     var result = Math.ceil(calculation);
+    //     // return result
+    //     return result;
 
-    }
+    // }
 
 });

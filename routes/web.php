@@ -20,3 +20,5 @@ Route::get('/', function () {
 
 // request for weather data
 Route::post('/request/weather', [App\Http\Controllers\WeatherController::class, 'requestWeatherData']);
+
+Route::get('/test', [App\Http\Controllers\WeatherController::class, 'test']);
